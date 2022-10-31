@@ -1,12 +1,352 @@
+<style>
+.announcement-bar {
+  height: 100%
+}
+#custom-announcement-bar {
+  margin: auto;
+  width: 40vw;
+  height: 26px;
+  font-size: 16px;
+  line-height: 26px;
+}
+.announcement-bar-slider {
+  background-color: {{ section.settings.announcement_bar_color }};
+  text-align: center;
+  text-decoration: none;
+}
+.flickity-viewport {
+  margin: auto;
+  width: 100%;
+}
+.announcement-bar__message {
+  width: 40vw;
+  font-weight: 600;
+}
+@media only screen and (max-width: 768px) {
+  #custom-announcement-bar {
+    width: 80vw;
+  }
+  .flickity-viewport {
+    width: 100%;
+  }
+  .announcement-bar__message {
+    width: 80vw;
+    height: 25px;
+    line-height: 25px;
+  }
+}
+.flickity-button svg {
+   height: 10px !important;
+}
+
+.flickity-button{
+  background: transparent!important;
+  color: white!important;
+}
+ 
+.flickity-enabled.is-draggable {
+  z-index:5;
+  position: relative;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+ 
+@media (min-width:300px) and (max-width:425px) {
+  .flickity-enabled.is-draggable{
+    z-index:5;
+    position: relative;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+}
+.flickity-prev-next-button.next {
+  right: -36px;
+}
+.flickity-prev-next-button.previous {
+  left: -36px;
+}
+
+@media (min-width:425px) and (max-width:1024px){
+  .flickity-enabled.is-draggable{
+    z-index:5;
+    position: relative;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+}
+   
+.announcement-bar-slider {
+  z-index: -580;
+  position:relative;
+}
+</style>
+{% assign slider_cell_count = 0 %}
+{% for counter in (1..5) %}
+  {% assign text_key = 'announcement_text' | append: counter %}
+  {% assign text_class = 'text' | append: counter %}
+  {% assign announcement_text = section.settings[text_key] | escape %}
+  {% if announcement_text != 'Announce something here' and announcement_text != '' %}
+    {% assign slider_cell_count = slider_cell_count | plus: 1 %}
+  {% endif %}  
+{% endfor %}
+
+{% if section.settings.announcement_show or section.settings.show_locale_selector or section.settings.show_currency_selector or section.settings.menu != blank %}
+  <div id="section-id-{{ section.id }}" class="announcement-bar{% if section.settings.announcement_show %} announcement-bar--with-announcement{% endif %}{% if section.settings.announcement_text.size > 45 and section.settings.menu != blank %} announcement-bar--tablet-wrap{% endif %}" data-section-type="announcement-bar" data-cc-animate>
+    {% style %}
+      #section-id-{{ section.id }} {
+        background: {{ section.settings.announcement_bar_col }};
+        color: {{ section.settings.announcement_text_col }};
+      }
+    {% endstyle %}
+
+    {%- capture announcement_html -%}
+      {%- if section.settings.announcement_show -%}
+        {%- if section.settings.announcement_link != blank -%}
+          <a class="announcement-bar__link" href="{{ section.settings.announcement_link }}">
+        {%- endif -%}
+        <div class="announcement-bar__inner">{{ section.settings.announcement_text }}</div>
+        {%- if section.settings.announcement_link != blank -%}
+          </a>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endcapture -%}
+
+    <div class="container container--no-max">
+      <div class="announcement-bar__left">
+        {% if section.settings.show_social_icons %}
+          {% render 'social-icons', icon_setting: settings.social_custom_icon, icon_size: 'x30', container_class: 'desktop-only' %}
+        {% endif %}
+      </div>
+
+      <div class="announcement-bar__middle">
+        {% comment %}
+        {{ announcement_html }}
+        {% endcomment %}
+       
+          <div id="custom-announcement-bar" class="custom-announcement-bar">
+
+            {%- if section.settings.announcement_show -%}
+              {%- if section.settings.home_page_only == false or template.name == 'index' -%}
+
+                {%- if slider_cell_count == 0 or section.settings.link != blank -%}
+                  <div id="close_bar"class="announcement-bar-link"> </div>
+           
+                {%- else -%}
+                  <div id="close_bar"class="announcement-bar-slider">
+                   
+                   
+                    {% for counter in (1..5) %}
+ {% assign text_key = 'announcement_text' | append: counter %}
+                      {% assign text_class = 'text' | append: counter %}
+                      {% assign announcement_text = section.settings[text_key] | escape %}
+                      {% if announcement_text != 'Announce something here' and announcement_text != '' %}
+                    <p class="announcement-bar__message {{text_class}}"> {{ section.settings[text_key] | escape }} </p>
+                      {% endif %}
+                    {% endfor %}
+                    {% comment %}
+                    <p class="announcement-bar__message text1">hello</p>
+                      <p class="announcement-bar__message text2">world</p>
+                     
+                     
+                     
+                      {%- if section.settings.text1 != ""  -%}
+                        {%- if section.settings.text2 == ""  -%}
+                      <p class="announcement-bar__message text1"><strong>{{ section.settings.text1 | escape }}</strong></p>
+                        {%- endif -%}
+                      {%- endif -%}
+                       {%- if section.settings.text2 != ""   -%}
+                       <p class="announcement-bar__message text2"><strong>{{ section.settings.text2 | escape }}</strong></p>
+                        {%- endif -%}
+                       {%- if section.settings.text3 != ""   -%}
+                       <p class="announcement-bar__message text3"><strong>{{ section.settings.text3 | escape }}</strong></p>
+                       {%- endif -%}
+                       {% endcomment %}
+                  </div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if section.settings.show_announcement_close_icon -%}
+             {%- if section.settings.link == blank -%}
+          <span id="close_div" class="close-div" onclick="myFunction()">x</span>
+             {%- endif -%}
+           {%- endif -%}
+          </div>
+      </div>
+
+      <div class="announcement-bar__right">
+        {% if section.settings.menu != blank %}
+          <span class="inline-menu desktop-only">
+            {% for link in linklists[section.settings.menu].links %}
+              <a class="inline-menu__link announcement-bar__link" href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+          </span>
+        {% endif %}
+        {% if section.settings.show_locale_selector or section.settings.show_currency_selector %}
+          <div class="header-disclosures desktop-only">
+            {% render 'localization', input_prefix: 'annbar' %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+<script>
+ 
+function myFunction() {  
+  document.querySelector(".custom-announcement-bar").style.display = 'none';
+  /* document.getElementById("slice-header").style.marginTop = "0px"; */
+}
+</script>
+
+<!-- for announcement-bar slider -->
+<script>
+  var slider_cell_count = {{ slider_cell_count }}
+  var elem = document.querySelector('.announcement-bar-slider');
+  if (elem && slider_cell_count > 1) {
+    var flkty = new Flickity( elem, {
+    freeScroll: true,
+    contain: true,
+    wrapAround: true,
+    // disable previous & next buttons and dots
+    prevNextButtons: true,
+    pageDots: false,
+    autoPlay: {{ section.settings.autoplay_speed | times: 1000 }},
+    slidesToShow: 1,
+  });
+  }
+ 
+</script>
+
+{% comment %}
+link has been removed from the schema
+{
+  "type": "url",
+  "id": "announcement_link",
+  "label": "Link"
+},
+{% endcomment %}
+
+
 {% schema %}
   {
-    "name": "Section name",
-    "settings": []
+    "name": "Announcement bar",
+    "class": "section-announcement-bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "announcement_show",
+        "label": "Show announcement",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "home_page_only",
+        "label": "Homepage Only",
+        "default": false
+      },
+ {
+        "type": "range",
+        "id": "autoplay_speed",
+        "label": "Change images every",
+        "default": 3,
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "s"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text1",
+        "label": "Text 1",
+        "default": "Announce something here"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text2",
+        "label": "Text 2",
+        "default": "Announce something here"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text3",
+        "label": "Text 3",
+        "default": "Announce something here"
+      },
+ {
+        "type": "text",
+        "id": "announcement_text4",
+        "label": "Text 4",
+        "default": "Announce something here"
+      },
+ {
+        "type": "text",
+        "id": "announcement_text5",
+        "label": "Text 5",
+        "default": "Announce something here"
+      },
+     
+      {
+        "type": "color",
+        "id": "announcement_bar_col",
+        "label": "Bar",
+        "default": "#4a4a4a"
+      },
+      {
+        "type": "color",
+        "id": "announcement_text_col",
+        "label": "Text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Links"
+      },
+      {
+        "type": "paragraph",
+        "content": "Links, social media icons, and localization options will show in the menu on mobile"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_social_icons",
+        "label": "Show social media links",
+        "default": true
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu",
+        "info": "This menu won't show dropdown items"
+      },
+      {
+        "type": "header",
+        "content": "Language Selector",
+        "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_locale_selector",
+        "label": "Show language selector",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Currency Selector",
+        "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_currency_selector",
+        "label": "Show currency selector",
+        "default": true
+      }
+    ],
+    "presets": [
+{
+"name": "Announcement Bar Slider",
+"category": "Custom"
+}
+]
   }
 {% endschema %}
-
-{% stylesheet %}
-{% endstylesheet %}
-
-{% javascript %}
-{% endjavascript %}
