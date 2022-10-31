@@ -113,9 +113,9 @@
 
     <div class="container container--no-max">
       <div class="announcement-bar__left">
-        {% if section.settings.show_social_icons %}
+     {% comment %}    {% if section.settings.show_social_icons %}
           {% render 'social-icons', icon_setting: settings.social_custom_icon, icon_size: 'x30', container_class: 'desktop-only' %}
-        {% endif %}
+        {% endif %} {% endcomment %}
       </div>
 
       <div class="announcement-bar__middle">
