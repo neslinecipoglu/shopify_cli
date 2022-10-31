@@ -215,7 +215,7 @@
       "settings": {
         "announcement_show": true,
         "home_page_only": true,
-        "autoplay_speed": 1,
+        "autoplay_speed": 3,
         "announcement_text1": "test1",
         "announcement_text2": "test2",
         "announcement_text3": "test3",
