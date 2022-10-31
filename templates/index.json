@@ -214,7 +214,7 @@
       "type": "announcement-bar-slider",
       "settings": {
         "announcement_show": true,
-        "home_page_only": true,
+        "home_page_only": false,
         "autoplay_speed": 2,
         "announcement_text1": "Test Announce 1",
         "announcement_text2": "Test Announce 2",
